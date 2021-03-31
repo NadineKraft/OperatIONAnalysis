@@ -1,0 +1,10 @@
+# Project exclude paths
+/venv/
+/ont-guppy-cpu/
+/ngmlr/
+*.idea
+reference_source/fasta_references/GRCh38.fna
+reference_source/fasta_references/mm10.fa
+reference_source/gff3_references/Homo_sapiens.GRCh38.102.chr.gff3
+*.sam
+*.gff3
