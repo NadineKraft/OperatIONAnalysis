@@ -136,7 +136,7 @@ def run_analysis(analysis_id):
     analysis_methylation_analysis = analysis.methylation_analysis
     analysis_status_parameter = analysis.status_parameter_analysis
     analysis_copy_number_variation = analysis.copy_number_variation_analysis
-    source_list = []
+    Analyser = []
     if analysis_status_parameter:
         print('analysis status parameter')
         # TODO: Modify Path
@@ -145,7 +145,7 @@ def run_analysis(analysis_id):
                                             '-app/public/results/'
         status_parameter_source = PycoQC(config.status_parameter_input_directory,
                                          status_parameter_output_directory, analysis.prefix)
-        source_list.append(status_parameter_source)
+        Analyser.append(status_parameter_source)
     if analysis_methylation_analysis:
         print('analysis methylation')
     if analysis_copy_number_variation:
@@ -158,14 +158,14 @@ def run_analysis(analysis_id):
         copy_number_variation_source = NanoGladiatorCNVSource(analysis.prefix, cnv_chromosome_list,
                                                               config.cnv_input_directory,
                                                               cnv_output_directory)
-        source_list.append(copy_number_variation_source)
+        Analyser.append(copy_number_variation_source)
 
-    if not source_list:
+    if not Analyser:
         analysis.status = "FAILED"
         analysis.save()
 
     else:
 
-        Analysis(source_list).analyse()
+        Analysis(Analyser).analyse()
         analysis.status = "COMPLETED"
         analysis.save()
