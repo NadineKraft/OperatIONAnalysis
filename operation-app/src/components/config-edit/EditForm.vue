@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p class="card-text">Config ID: {{ id }}</p>
     <div class="form-group">
       <label for="name">Config Name</label>
       <input
@@ -15,7 +16,7 @@
     </div>
 
     <div class="form-group">
-      <label for="basecaller">Basecaller : </label>
+      <label for="basecaller">Basecaller</label>
       <select id="basecaller" v-model="config.basecaller">
         <option disabled value="">Please select a Basecaller</option>
         <option>Megalodon</option>
@@ -26,7 +27,7 @@
     <div class="form-group">
       <label for="methylationcaller">Methylationcaller :</label>
       <select id="methylationcaller" v-model="config.methylationcaller">
-        <option disabled value="">Please select a Methylationcaller</option>
+        <option disabled value="">Please select one</option>
         <option>Megalodon</option>
         <option>ngmlr</option>
       </select>
@@ -34,24 +35,10 @@
     <div class="form-group">
       <label for="aligner">Aligner :</label>
       <select id="aligner" v-model="config.aligner">
-        <option disabled value="">Please select an Aligner</option>
+        <option disabled value="">Please select one</option>
         <option>Megalodon</option>
         <option>nanopolish</option>
       </select>
-    </div>
-
-    <div class="form-group">
-      <label for="megalodon_parameters">Megalodon Parameters</label>
-      <input
-        type="text"
-        class="form-control"
-        id="megalodon_parameters"
-        v-model="config.megalodon_parameters"
-        v-validate="'required'"
-        name="megalodon_parameters"
-        placeholder="Enter additional megalodon parameters"
-      />
-      <div class="invalid-feedback">Please provide parameters.</div>
     </div>
 
     <div class="form-group">
@@ -67,6 +54,49 @@
       />
       <div class="invalid-feedback">Please provide a valid path.</div>
     </div>
+
+        <div class="form-group">
+      <label for="megalodon_parameters">Megalodon Parameters</label>
+      <input
+        type="text"
+        class="form-control"
+        id="megalodon_parameters"
+        v-model="config.megalodon_parameters"
+        v-validate="'required'"
+        name="megalodon_parameters"
+        placeholder="Enter additional megalodon parameters"
+      />
+      <div class="invalid-feedback">Please provide parameters.</div>
+    </div>
+
+        <div class="form-group">
+      <label for="megalodon_processes">Megalodon processes</label>
+      <input
+        type="text"
+        class="form-control"
+        id="megalodon_processes"
+        v-model="config.megalodon_processes"
+        v-validate="'required'"
+        name="megalodon_processes"
+        placeholder="Enter megalodon processes"
+      />
+      <div class="invalid-feedback">Please provide valid parameters.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="megalodon_devices">Megalodon devices</label>
+      <input
+        type="text"
+        class="form-control"
+        id="megalodon_devices"
+        v-model="config.megalodon_devices"
+        v-validate="'required'"
+        name="megalodon_devices"
+        placeholder="Enter megalodon devices"
+      />
+      <div class="invalid-feedback">Please provide valid parameters.</div>
+    </div>
+
 
     <div class="form-group">
       <label for="fasta_reference_directory"> Fasta Reference</label>
@@ -124,39 +154,12 @@
       <div class="invalid-feedback">Please provide valid parameters.</div>
     </div>
 
-    <div class="form-group">
-      <label for="megalodon_processes">Megalodon processes</label>
-      <input
-        type="text"
-        class="form-control"
-        id="megalodon_processes"
-        v-model="config.megalodon_processes"
-        v-validate="'required'"
-        name="megalodon_processes"
-        placeholder="Enter megalodon processes"
-      />
-      <div class="invalid-feedback">Please provide valid parameters.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="megalodon_devices">Megalodon devices</label>
-      <input
-        type="text"
-        class="form-control"
-        id="megalodon_devices"
-        v-model="config.megalodon_devices"
-        v-validate="'required'"
-        name="megalodon_devices"
-        placeholder="Enter megalodon devices"
-      />
-      <div class="invalid-feedback">Please provide valid parameters.</div>
-    </div>
 
 
 
     <div class="form-group">
       <label for="status_parameter_input_directory"
-        >Status parameter input directory</label
+        >Status Parameter Input Directory</label
       >
       <input
         type="text"
@@ -171,7 +174,7 @@
 
     <div class="form-group">
       <label for="cnv_input_directory"
-        >Copy number variation input directory</label
+        >Copy Number Variation Input Directory</label
       >
       <input
         type="text"
@@ -185,17 +188,21 @@
       <div class="invalid-feedback">Please provide valid parameters.</div>
     </div>
 
-    <button type="submit" @click="addConfig()" class="btn btn-primary">
+    <button type="submit" @click="editConfig()" class="btn btn-primary">
       Submit
     </button>
+
+
   </div>
+
 </template>
 
 <script>
-import addConfig from "@/services/addConfig";
+import editConfig from "@/services/editConfig";
+import axios from "axios";
 
 export default {
-  name: "AddForm",
+  name: "EditForm",
   data() {
     return {
       config: {
@@ -212,16 +219,28 @@ export default {
         methylationcaller: "",
         aligner: "",
         status_parameter_input_directory: "",
-        cnv_input_directory: "",
-      },
+        cnv_input_directory: ""
+      }
     };
   },
-  methods: {
-    async addConfig() {
-      await addConfig(this.config);
-      await this.$router.push("/configs-list");
-    },
+  mounted() {
+    axios
+      .get("http://127.0.0.1:8000/api/configs/" + this.$route.params.id)
+      .then(response => {
+        console.log(response.data);
+        this.config = response.data;
+      });
   },
+  methods: {
+    async editConfig() {
+      await editConfig(this.config);
+      await this.$router.push("/configs-list");
+    }
+  },
+  created() {
+    this.id = this.$route.params.id;
+    this.getData();
+  }
 };
 </script>
 

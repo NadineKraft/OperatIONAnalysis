@@ -7,37 +7,38 @@
             Name: {{ config.name }} ID: {{ config.id }}
           </h5>
           <p class="card-title">Basecaller: {{ config.basecaller }}</p>
+          <p class="card-text">Methylationcaller: {{ config.methylationcaller }}</p>
+          <p class="card-text">Aligner: {{ config.aligner }}</p>
           <p class="card-text">
-            megalodon_input_directory: {{ config.megalodon_input_directory }}
+            Megalodon Output Directory: {{ config.megalodon_output_directory }}
           </p>
           <p class="card-text">
-            megalodon_output_directory: {{ config.megalodon_output_directory }}
+            Megalodon Devices: {{ config.megalodon_devices }}
           </p>
           <p class="card-text">
-            fasta_reference_directory: {{ config.fasta_reference_directory }}
-          </p>
-          <p class="card-text">guppy_config: {{ config.guppy_config }}</p>
-          <p class="card-text">
-            guppy_server_path: {{ config.guppy_server_path }}
-          </p>
-          <p class="card-text">guppy_config: {{ config.guppy_params }}</p>
-          <p class="card-text">
-            megalodon_devices: {{ config.megalodon_devices }}
-          </p>
-          <p class="card-text">
-            megalodon_processes: {{ config.megalodon_processes }}
+            Megalodon Processes: {{ config.megalodon_processes }}
           </p>
 
           <p class="card-text">
-            Methylationcaller: {{ config.methylationcaller }}
+            Megalodon Parameters: {{ config.megalodon_parameters }}
           </p>
           <p class="card-text">
-            status_parameter_input_directory:
+            Fasta Reference Directory: {{ config.fasta_reference_directory }}
+          </p>
+          <p class="card-text">Guppy Config: {{ config.guppy_config }}</p>
+          <p class="card-text">
+            Guppy Server Path: {{ config.guppy_server_path }}
+          </p>
+          <p class="card-text">Guppy Parameters {{ config.guppy_params }}</p>
+
+
+          <p class="card-text">
+            Status Parameter Input Directory:
             {{ config.status_parameter_input_directory }}
           </p>
 
           <p class="card-text">
-            cnv_input_directory: {{ config.cnv_input_directory }}
+            Copy Number Variation Input Directory: {{ config.cnv_input_directory }}
           </p>
           <button
             class="btn btn-danger btn-sm ml-1"
@@ -52,6 +53,14 @@
             }"
             class="btn btn-sm btn-primary"
             >Select Experiment
+          </router-link>
+          <router-link
+            :to="{
+              name: 'ConfigEdit',
+              params: { id: config.id },
+            }"
+            class="btn btn-sm btn-secondary"
+            >Edit Config
           </router-link>
         </div>
       </div>

@@ -6,8 +6,8 @@ from enum import Enum
 class ConfigModel(models.Model):
     name = models.CharField(max_length=255, default="")
     basecaller = models.CharField(max_length=255, default="")
-    megalodon_input_directory = models.CharField(max_length=255, default="")
     megalodon_output_directory = models.CharField(max_length=255, default="")
+    megalodon_parameters = models.CharField(max_length=255, default="")
     fasta_reference_directory = models.CharField(max_length=255, default="")
     guppy_config = models.CharField(max_length=255, default="")
     guppy_server_path = models.CharField(max_length=255, default="")
@@ -46,7 +46,6 @@ class ExperimentModel(models.Model):
     methylation_calling = models.BooleanField(default=False)
     alignment = models.BooleanField(default=False)
     fast5_dir = models.CharField(max_length=255)
-    description = models.TextField()
     processed = models.CharField(max_length=255, choices=TransactionStatus.choices())
     config_id = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)

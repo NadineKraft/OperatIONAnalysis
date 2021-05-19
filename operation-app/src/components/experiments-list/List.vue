@@ -35,7 +35,6 @@
                 Methylationcalling
               </p>
               <p v-if="experiment.alignment" class="card-text">Alignment</p>
-              <p class="card-text">Description: {{ experiment.description }}</p>
               <p class="card-text">Processed: {{ experiment.processed }}</p>
               <button
                 class="btn btn-danger btn-sm ml-1"
@@ -94,7 +93,7 @@ export default {
 
     runProcessing: async function (experiment) {
       await runProcessing(experiment);
-      this.startLoading();
+      // this.startLoading();
       await this.getData();
       this.$forceUpdate();
     },

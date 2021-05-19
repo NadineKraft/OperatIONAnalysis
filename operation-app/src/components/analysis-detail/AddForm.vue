@@ -2,9 +2,8 @@
   <div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">Select Analysis Parmaters for:</h5>
+        <h5 class="card-title">Select Analysis Parameters for:</h5>
         <p class="card-text">Experiment Name: {{ name }}</p>
-        <p class="card-text">Experiment ID: {{ id }}</p>
       </div>
       <form @submit="checkForm" @submit.prevent="create" method="post">
         <div v-if="errors.length">
@@ -58,7 +57,7 @@
             v-model="analysis.copy_number_variation_analysis"
           />
           <label for="analysis.copy_number_variation_analysis"
-            >copy number variation alysis</label
+            >Copy Number Variation Analysis</label
           >
         </div>
 
@@ -70,7 +69,7 @@
             v-model="analysis.status_parameter_analysis"
           />
           <label for="analysis.status_parameter_analysis"
-            >status parameter analysis</label
+            >Status Parameter Analysis</label
           >
         </div>
         <button type="submit" @click="addAnalysis()" class="btn btn-primary">

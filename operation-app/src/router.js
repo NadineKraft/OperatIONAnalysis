@@ -30,6 +30,11 @@ export default new Router({
       component: () => import("./views/ConfigsList.vue"),
     },
     {
+      path: "/config-edit",
+      name: "ConfigEdit",
+      component: () => import("./views/ConfigEdit.vue"),
+    },
+    {
       path: "/config-detail",
       name: "ConfigDetail",
       component: () => import("./views/ConfigDetail.vue"),

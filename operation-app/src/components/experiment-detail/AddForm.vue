@@ -79,19 +79,6 @@
           Please provide a valid directory path.
         </div>
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          name="description"
-          class="form-control"
-          id="description"
-          v-validate="'required'"
-          v-model="experiment.description"
-          cols="30"
-          rows="2"
-        ></textarea>
-        <div class="invalid-feedback">Please provide a valid description.</div>
-      </div>
 
       <button type="submit" @click="addExperiment()" class="btn btn-primary">
         Submit
@@ -116,7 +103,6 @@ export default {
         fast5_dir: "",
         processed: "INITIATED",
         config_id: this.$route.params.id,
-        description: "",
       },
       id: 0,
       errors: [],
@@ -130,8 +116,7 @@ export default {
     checkForm: function (e) {
       if (
         this.experiment.name &&
-        this.experiment.fast5_dir &&
-        this.experiment.description
+        this.experiment.fast5_dir
       ) {
         return true;
       }
@@ -142,9 +127,7 @@ export default {
       if (!this.experiment.fast5_dir) {
         this.errors.push("Fast5 Directory required");
       }
-      if (!this.experiment.description) {
-        this.errors.push("Description required");
-      }
+
       if (this.experiment.alignment && !this.experiment.basecalling) {
         this.errors.push("Please check also basecalling or Methylationcalling");
       }

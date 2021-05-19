@@ -20,6 +20,15 @@ export async function postData(params) {
   return response.data;
 }
 
+export async function putConfig(params) {
+    const response = await axios.put(
+    BASE_URL + "/api/" + params.path + "/",
+    params.data
+  );
+  await sleep(900);
+  return response.data;
+}
+
 export async function putData(params) {
   const response = await axios.put(
     BASE_URL + "/api/" + params.path + "/",

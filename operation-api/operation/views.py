@@ -33,6 +33,23 @@ class ConfigDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ConfigSerializer
 
 
+    def get_queryset(self):
+        data = ConfigModel.objects.all()
+        return data
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        #current = self.get_serializer(instance).data
+
+        self.perform_update(serializer)
+        result = serializer.data
+        return Response(result)
+
+
 class ExperimentList(generics.ListCreateAPIView):
     queryset = ExperimentModel.objects.all()
     serializer_class = ExperimentSerializer
@@ -47,6 +64,7 @@ class ExperimentDetail(generics.RetrieveUpdateDestroyAPIView):
         return data
 
     def update(self, request, *args, **kwargs):
+        global t1
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
 
@@ -57,14 +75,12 @@ class ExperimentDetail(generics.RetrieveUpdateDestroyAPIView):
         self.perform_update(serializer)
         result = serializer.data
 
-        experiment = ExperimentModel.objects.get(pk=current["id"])
-        config = ConfigModel.objects.get(pk=experiment.config_id)
-        print("config type", type(config))
+        # experiment = ExperimentModel.objects.get(pk=current["id"])
 
         if current['processed'] == 'INITIATED' and result['processed'] == 'PENDING':
-            t = threading.Thread(target=run_processing, args=[current["id"]])
-            t.setDaemon(True)
-            t.start()
+            t1 = threading.Thread(target=run_processing, args=[current["id"]])
+            t1.setDaemon(True)
+            t1.start()
 
         # TODO: Fehler abfangen
         elif current['processed'] == 'COMPLETED':
@@ -84,7 +100,7 @@ def run_processing(experiment_id):
     processor = MegalodonProcessor(MegalodonSource(experiment, config))
     Processing(processor).perform()
 
-    saveConfigFile(config_data, experiment_data)
+    #saveConfigFile(config_data, experiment_data)
     experiment.processed = "COMPLETED"
     experiment.save()
 
@@ -114,9 +130,17 @@ class AnalysisDetail(generics.RetrieveUpdateDestroyAPIView):
         result = serializer.data
 
         if current['status'] == 'INITIATED' and result['status'] == 'PENDING':
-            t = threading.Thread(target=run_analysis, args=[current["id"]])
-            t.setDaemon(True)
-            t.start()
+            t2 = threading.Thread(target=run_analysis, args=[current["id"]])
+            t2.setDaemon(True)
+            t2.start()
+            time.sleep(200)
+            # Rerun analysis if processing has not finished
+            while t1.is_alive():
+                t2 = threading.Thread(target=run_analysis, args=[current["id"]])
+                t2.setDaemon(True)
+                t2.start()
+                time.sleep(300)
+            print("Done!")
 
         else:
             analysis = AnalysisModel.objects.get(pk=current["id"])
@@ -128,7 +152,6 @@ class AnalysisDetail(generics.RetrieveUpdateDestroyAPIView):
 
 # @background(schedule=1)
 def run_analysis(analysis_id):
-    time.sleep(60)
     analysis = AnalysisModel.objects.get(pk=analysis_id)
     experiment = ExperimentModel.objects.get(pk=analysis.experiment_id)
     config = ConfigModel.objects.get(pk=experiment.config_id)
@@ -165,7 +188,6 @@ def run_analysis(analysis_id):
         analysis.save()
 
     else:
-
         Analysis(Analyser).analyse()
         analysis.status = "COMPLETED"
         analysis.save()
